@@ -1798,20 +1798,11 @@ window.onclick = function(event) {
 
 
 
-                fetch("https://script.google.com/macros/s/AKfycbzMXlwjtQRYY2ZGiIbqxqag6GLD5AXHSHvKeg_SU9eoIKHq3z_cxzO72GiFETnYTxmx/exec", {
-    method: "POST",
-    body: JSON.stringify(briefing),
-    headers: {
-        "Content-Type": "application/json"
-    }
-})
-.then(response => response.text())
-.then(data => {
-    console.log("Sucesso:", data);
-})
-.catch(error => {
-    console.error("Erro:", error);
-});
+                let history = JSON.parse(localStorage.getItem("briefHistory")) || [];
+
+                history.push(briefing);
+
+                localStorage.setItem("briefHistory", JSON.stringify(history));
 
 
 
