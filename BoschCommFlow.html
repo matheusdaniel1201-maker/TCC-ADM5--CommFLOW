@@ -665,42 +665,38 @@ body.dark .theme-toggle-btn img {
 }
 
 /* REMOVE ESTILO PADRÃO DO SELECT */
+/* 1. CONFIGURAÇÃO GERAL DO SELECT (MODO CLARO) */
 select {
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
-    background-color: #E0E2E5;
-    border: none;
-}
-
-select {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-
-    background-color: #E0E2E5;
-
+    background-color: #E0E2E5; /* Use background-color para ser seguro */
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%231e293b'%3E%3Cpath d='M5 7l5 5 5-5'/%3E%3C/svg%3E");
-
     background-repeat: no-repeat;
     background-position: right 12px center;
     background-size: 16px;
-
     padding-right: 40px;
+    border: none;
+    width: 100%;
+    padding: 12px;
+    color: var(--text);
+    border-radius: 0px;
 }
 
+/* 2. AJUSTES PARA O MODO ESCURO (CORRIGIDO) */
 body.dark select {
     background-color: #1e293b;
-
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'%3E%3Cpath d='M5 7l5 5 5-5'/%3E%3C/svg%3E");
+    /* Trocamos a cor da seta para branco (%23ffffff) */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23ffffff'%3E%3Cpath d='M5 7l5 5 5-5'/%3E%3C/svg%3E");
 }
 
-/* Dark mode */
+/* 3. OUTROS CAMPOS NO DARK MODE (SEM ATROPELAR O SELECT) */
 body.dark input,
-body.dark select,
 body.dark textarea {
-    background: #1e293b;
+    background-color: #1e293b;
+    color: var(--text);
 }
+
 
     input:focus { border-color: var(--bosch-light); box-shadow: 0 0 0 3px rgba(0, 142, 207, 0.1); }
 
