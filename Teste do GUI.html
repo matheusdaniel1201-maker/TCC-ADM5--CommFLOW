@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bosch CommFlow | Lean Communication System</title>
+    
+    <style>
+    
+    /* Adicione isso dentro da tag <style> */
+.btn-outline {
+    background-color: transparent;
+    border: 2px solid #007bc0; /* Azul Bosch */
+    color: #007bc0;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+    margin-right: 10px;
+}
+.btn-outline:hover {
+    background-color: #007bc0;
+    color: white;
+}
+        /* Estilos essenciais para o menu não quebrar */
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1001;
+        }
+        .header-left, .header-right {
+            display: flex;
+            align-items: center;
+        }
+        /* Se a imagem for pequena (40px), o z-index não atrapalha */
+        .commflow-logo img {
+            height: 40px; /* Tamanho sugerido para imagem menor */
+            width: auto;
+        }
+    </style>
+</head>
+<body class="light"> 
+    <header class="top-header">
+       <div class="header-left">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Bosch-logo.svg/1280px-Bosch-logo.svg.png" 
+         alt="Bosch Logo" 
+         class="bosch-logo">
+    
+    <div class="divider"></div>
+            <div class="commflow-logo">
+    <img src="https://raw.githubusercontent.com/matheusdaniel1201-maker/TCC-ADM5--CommFLOW/refs/heads/main/logo%20(2).svg" 
+         class="logo-ajustavel logo-light" alt="CommFlow Logo">
+    
+    <img src="https://raw.githubusercontent.com/matheusdaniel1201-maker/TCC-ADM5--CommFLOW/refs/heads/main/logo%20(3).svg" 
+         class="logo-ajustavel logo-dark" alt="CommFlow Logo">
+</div>
+        </div>
+        <div class="header-right" style="z-index: 1002;">
+            <div class="lang-custom-dropdown">
+                <button type="button" class="lang-btn" onclick="toggleLangMenu()" style="cursor: pointer;">
+                    <img src="https://raw.githubusercontent.com/matheusdaniel1201-maker/TCC-ADM5--CommFLOW/refs/heads/main/chat-language.svg" alt="Idioma" style="width: 22px;">
+                    <span id="current-lang-text"></span> 
+                </button>
+                <div id="lang-options" class="lang-dropdown-content">
+                    <div onclick="selectLang('pt')">Português (PT)</div>
+                    <div onclick="selectLang('en')">English (EN)</div>
+                </div>
+            </div>
+            <button class="theme-toggle-btn" onclick="toggleTheme()" style="cursor: pointer; margin-left: 15px;">
+                <img id="theme-icon" src="https://raw.githubusercontent.com/matheusdaniel1201-maker/TCC-ADM5--CommFLOW/refs/heads/main/circle-half%20(1).svg" style="width: 20px;">
+            </button>
+        </div>
+    </header>
+    </body>
+</html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bosch CommFlow | Lean Communication System</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+    
+    /* Ícone do calendário no modo dark */
+body.dark input\[type="date"\]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+    
+    /* Garante uma transição suave na mudança de cor */
+.bosch-logo {
+    transition: filter 0.3s ease;
+}
+/* Quando o modo dark estiver ativo, aplica o filtro para deixar branco */
+body.dark .bosch-logo {
+    filter: brightness(0) invert(1);
+}
+    
+    /* Configuração base para os dois logos */
+.logo-ajustavel {
+    height: 45px; /* Controle a altura aqui */
+    width: auto;
+    display: block;
+    pointer-events: none;
+}
+/* Por padrão, esconde a versão dark */
+.logo-dark {
+    display: none;
+}
+/* Quando o body for DARK: esconde a luz e mostra a dark */
+body.dark .logo-light {
+    display: none;
+}
+body.dark .logo-dark {
+    display: block;
+}
+    
+    /* Ajuste no Body para dar espaço ao header fixo */
+body { 
+    margin: 0; 
+    padding-top: 60px; /* Altura do header */
+    display: flex; 
+}
+.top-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: var(--card-bg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 1001;
+    border-bottom: 1px solid var(--border);
+}
+/* Lado Esquerdo: Logo e Nome */
+.header-left { display: flex; align-items: center; gap: 15px; }
+.bosch-logo { height: 25px; }
+.divider { width: 1px; height: 30px; background: var(--border); }
+/* Lado Direito: Botões */
+.header-right { display: flex; align-items: center; gap: 10px; }
+/* Botões limpos como na imagem */
+.lang-btn, .theme-toggle-btn {
+    background: transparent !important;
+    border: none !important;
+    cursor: pointer;
+    padding: 8px;
+}
+/* Ajuste na barra lateral para começar abaixo do header */
+nav {
+    height: calc(100vh - 60px);
+    top: 60px;
+}
+/* Container do Dropdown */
+.lang-custom-dropdown {
+    position: relative;
+    display: inline-block;
+}
+/* Botão do Idioma (Ícone + Texto) */
+.lang-btn {
+    background: #f4f7f9;
+    border: 0px solid var(--border);
+    color: var(--text);
+    padding: 0px 0px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0px;
+    height: 48px;
+    transition: all 0.2s;
+}
+body.dark .lang-btn {
+    background: #101629; /* Um cinza escuro que combina com seu dark mode */
+    border-color: var(--border);
+}
+/* Inverter cores dos ícones no Dark Mode */
+body.dark .lang-btn img, body.dark .theme-toggle-btn img {
+    filter: invert(1);
+}
+/* Menu suspenso (escondido por padrão) */
+.lang-dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: var(--card-bg);
+    min-width: 150px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    z-index: 1000;
+    border: px solid var(--border);
+    margin-top: 5px;
+}
+/* Opções de Idioma */
+.lang-dropdown-content div {
+    color: var(--text);
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+.lang-dropdown-content div:hover {
+    background-color: var(--bosch-blue);
+    color: white;
+}
+/* Classe ativada pelo JS para mostrar o menu */
+.show-lang {
+    display: block !important;
+}
+/* Inverter cores dos ícones SVG no Dark Mode */
+body.dark .lang-btn img, body.dark .theme-toggle-btn img {
+    filter: invert(1);
+}
+/* Menu suspenso (escondido por padrão) */
+.lang-dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: var(--card-bg);
+    min-width: 150px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    z-index: 1000;
+    border: 0px solid var(--border);
+    margin-top: 5px;
+}
+/* Opções de Idioma */
+.lang-dropdown-content div {
+    color: var(--text);
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+.lang-dropdown-content div:hover {
+    background-color: var(--bosch-blue);
+    color: white;
+}
+/* Classe para mostrar o menu via JavaScript */
+.show-lang {
+    display: block !important;
+}
+    :root {
+        --bosch-red: #d50005;
+        --bosch-blue: #006ead;
+        --bosch-light: #008ecf;
+        --bosch-gradient: linear-gradient(135deg, #005691, #008ecf);
+        --bg: #f4f7f9;
+        --nav-bg: #eff1f2;
+        --card-bg: #ffffff;
+        --text: #1e293b;
+        --text-sub: #64748b;
+        --border: #cbd5e1;
+        --input-bg: #ffffff;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #006ead;
+    }
+    body.dark {
+        --bg: #0f172a;
+        --nav-bg: #1e293b;
+        --card-bg: #1e293b;
+        --text: #f8fafc;
+        --text-sub: #94a3b8;
+        --border: #334155;
+        --input-bg: #0f172a;
+    }
+    \* { box-sizing: border-box; transition: background 0.3s, color 0.3s, border-color 0.3s; font-family: 'Inter', sans-serif; }
+    body { margin: 0; background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+    /* BARRA LATERAL CORRIGIDA */
+    nav {
+        width: 80px;
+        background: var(--nav-bg);
+        display: flex;
+        flex-direction: column;
+        align-items: center; 
+        padding: 20px 0;
+        gap: 10px;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        z-index: 100;
+        border-right: 0px solid var(--border);
+        transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden;
+    }
+    nav.expanded {
+        width: 260px;
+        align-items: stretch; /* Estica os itens para preencher a largura */
+        padding: 20px 10px;
+    }
+    .menu-toggle {
+        cursor: pointer;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        color: var(--text);
+        width: 60px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .nav-item {
+        width: 100%;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        border-radius: 0px;
+        font-size: 1.1rem;
+        color: var(--text-sub);
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.2s;
+        padding: 0; /* Removido padding para não desalinharem os ícones */
+    }
+    /* CENTRALIZAÇÃO DOS ÍCONES */
+    /* Usamos 80px (largura da barra) para garantir que o ícone fique no meio exato */
+    .nav-item i {
+        min-width: 80px; 
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+    /* Ajuste quando a barra expande para o texto não ficar longe */
+    nav.expanded .nav-item i {
+        min-width: 60px; 
+    }
+    .nav-item span {
+        display: none;
+        font-size: 0.95rem;
+        font-weight: 500;
+        white-space: nowrap;
+    }
+    nav.expanded .nav-item span {
+        display: block;
+    }
+    /* ESTADO ATIVO - CORRIGIDO PARA NÃO VAZAR */
+    .nav-item.active {
+        background: var(--bosch-blue) !important;
+        color: #ffffff !important;
+    }
+    .nav-item.active i, .nav-item.active span {
+        color: #ffffff !important;
+    }
+    .nav-item:hover:not(.active) {
+        background: rgba(0, 110, 173, 0.1);
+        color: var(--bosch-blue);
+    }
+    .nav-bottom {
+        margin-top: auto;
+        width: 100%;
+    }
+    /* RESTO DO CONTEÚDO */
+    main { flex: 1; padding: 40px; display: flex; justify-content: center; }
+    .container { width: 100%; max-width: 1000px; }
+    .view-content { display: none; animation: fadeIn 0.4s ease; }
+    .view-content.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
+    .card { background: var(--card-bg); padding: 35px; margin-bottom: 20px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border: 1px solid var(--border); position: relative; overflow: hidden; }
+    .card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 8px; background: url('https://i.postimg.cc/85rCJ1Dc/supergraphic.png') no-repeat center; background-size: cover; z-index: 1; }
+    .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    /* Container que agrupa o Dropdown e o Botão Dark Mode */
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Espaço entre o dropdown e o botão */
+}
+/* Estilização do Menu de Idiomas (Dropdown) */
+.lang-dropdown {
+    padding: 8px 12px;
+    border-radius: 0px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text);
+    font-weight: 0;
+    cursor: pointer;
+    outline: none;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+.lang-dropdown:focus {
+    border-color: var(--bosch-blue);
+}
+/* Estilo do Botão de Dark Mode que ficará no topo */
+.theme-toggle-btn {
+    background: var(--card-bg); /* <--- MUDE O FUNDO AQUI */
+    border: px solid var(--border); /* <--- AJUSTE A BORDA AQUI (mudei de 0px para 1px para você ver) */
+    width: 38px;
+    height: 38px;
+    border-radius: 4px; /* <--- OPCIONAL: Arredondar um pouco os cantos */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+/* Cor para o modo claro */
+.theme-toggle-btn {
+    background: #f4f7f9;
+    /* ... resto do seu código ... */
+}
+/* Cor específica para o modo escuro */
+body.dark .theme-toggle-btn {
+    background: #101629; /* Um cinza escuro que combina com seu dark mode */
+    border-color: var(--border);
+}
+/* Adicione isto para evitar que o filtro do Dark Mode esconda o ícone */
+body.dark .theme-toggle-btn img {
+    filter: invert(1); /* Inverte a cor do SVG para branco no modo escuro, se ele for preto */
+}
+.theme-toggle-btn:hover {
+    background: rgba(0, 110, 173, 0.1);
+}
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .full-width { grid-column: span 2; }
+    label { display: block; font-size: 0.75rem; font-weight: 0; margin-bottom: 8px; color: var(--text-sub); text-transform: uppercase; }
+ input, select, textarea { 
+    width: 100%; 
+    padding: 12px; 
+    border-radius: 0px; 
+    border: none;
+    background: #E0E2E5;
+    color: var(--text); 
+    outline: none; 
+    font-size: 0.95rem; 
+}
+/* REMOVE ESTILO PADRÃO DO SELECT */
+/* 1. CONFIGURAÇÃO GERAL DO SELECT (MODO CLARO) */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #E0E2E5; /* Use background-color para ser seguro */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%231e293b'%3E%3Cpath d='M5 7l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
+    border: none;
+    width: 100%;
+    padding: 12px;
+    color: var(--text);
+    border-radius: 0px;
+}
+/* 2. AJUSTES PARA O MODO ESCURO (CORRIGIDO) */
+body.dark select {
+    background-color: #1e293b;
+    /* Trocamos a cor da seta para branco (%23ffffff) */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23ffffff'%3E%3Cpath d='M5 7l5 5 5-5'/%3E%3C/svg%3E");
+}
+/* 3. OUTROS CAMPOS NO DARK MODE (SEM ATROPELAR O SELECT) */
+body.dark input,
+body.dark textarea {
+    background-color: #1e293b;
+    color: var(--text);
+}
+    input:focus { border-color: var(--bosch-light); box-shadow: 0 0 0 3px rgba(0, 142, 207, 0.1); }
+    .drop-zone { border: 2px dashed var(--border); border-radius: 0px; padding: 30px; text-align: center; background: var(--bg); cursor: pointer; }
+    .btn-primary { background: var(--bosch-blue); color: white; border: none; padding: 14px 28px; border-radius: 0px; cursor: pointer; font-weight: 0; display: flex; align-items: center; gap: 10px; }
+    .btn-secondary { background: transparent; border: 1px solid var(--border); color: var(--text-sub); padding: 14px 28px; border-radius: 8px; cursor: pointer; font-weight: 0; }
+    .status-badge { padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 0; color: white; display: inline-block; white-space: nowrap; }
+    .status-enviado { background-color: #71767c; }
+    .status-recebido { background-color: #deb300; }
+    .status-progresso { background-color: #007bc0; }
+    .status-finalizado { background-color: #4ab073; }
+    .status-recusado { background-color: #ed0007; }
+    .lean-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+    .lean-table th, .lean-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border); }
+</style>
+</head>
+<body class="light">
+    <nav id="sidebar">
+        <div class="menu-toggle" onclick="toggleNav()">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="nav-item active" data-name="Briefing" onclick="switchTab('forms', this)">
+            <i class="fas fa-file-alt"></i>
+            <span>Briefing</span>
+        </div>
+        <div class="nav-item" data-name="Histórico" onclick="switchTab('history', this)">
+            <i class="fas fa-history"></i>
+            <span>Histórico</span>
+        </div>
+        <div class="nav-bottom">
+             <div class="nav-item" onclick="window.open('https://askbosch.ai.bosch.com', '\_blank')">
+                <i class="fas fa-robot"></i>
+                <span>AskBosch</span>
+            </div>
+            <div class="nav-item" onclick="window.open('https://www.linkedin.com/in/daniel-ferreira-da-silva-62283925a/', '\_blank')">
+                <i class="fas fa-external-link-alt"></i>
+                <span>LinkedIn</span>
+            </div>
+        </div>
+    </nav>
+    <main>
+        <div class="container">
+           <div id="view-forms" class="view-content active">
+    <div class="header-flex">
+        <div>
+            <h2 id="txt-main-title">Briefing de Comunicação</h2>
+            <p id="txt-subtitle" style="color: var(--text-sub); margin: 0;">
+                Otimização de Fluxo de Informação Corporativa
+            </p>
+        </div>
+    </div>
+    <div class="card">
+                    <form id="multi-form">
+                        <div class="form-step" id="step1">
+                            <div class="form-grid">
+                                <div>
+                                    <label id="lbl-dept">Área Solicitante</label>
+                                    <select id="f-area">
+                                        <option>PT-LA</option>
+                                        <option>GS-LA</option>
+                                        <option>PS-LA</option>
+                                        <option>SO-LA</option>
+                                        <option>MA-LA</option>
+                                        <option>RBLA-LA</option>
+                                        <option>Instituto Robert Bosch</option>
+                                        <option>ETS-LA</option>
+                                        <option>BISB-LA</option>
+                                        <option>Administrativo</option>
+                                        <option>Financeiro</option>
+                                        <option>Recursos humanos (RH) / Departamento pessoal (DP)</option>
+                                        <option>Comercial / Vendas</option>
+                                        <option>Marketing</option>
+                                        <option>Operações</option>
+                                        <option>Tecnologia da informação (TI)</option>
+                                        <option>Jurídico</option>
+                                        <option>Pesquisa e desenvolvimento (P&D)</option>
+                                        <option>Engenharia</option>
+                                        <option>Atendimento ao cliente / SAC</option>
+                                        <option>Compras / Suprimentos</option>
+                                        <option>Compliance / Governança</option>
+                                        <option>Controladoria</option>
+                                        <option>Relações institucionais / Governamentais</option>
+                                        <option>Projetos</option>
+                                        <option>Facilities / Serviços gerais</option>
+                                        <option>Estratégia corporativa</option>
+                                        <option>Planejamento estratégico</option>
+                                        <option>Excelência operacional</option>
+                                        <option>Qualidade</option>
+                                        <option>Gestão de riscos</option>
+                                        <option>Auditoria interna</option>
+                                        <option>Logística</option>
+                                        <option>Supply chain</option>
+                                        <option>Comércio exterior</option>
+                                        <option>Sustentabilidade</option>
+                                        <option>Inovação</option>
+                                        <option>Comunicação corporativa</option>
+                                        <option>Relações com investidores</option>
+                                        <option>Segurança patrimonial</option>
+                                        <option>Saúde, segurança e meio ambiente (SSMA)</option>
+                                        <option>Inteligência de mercado</option>
+                                        <option>Transformação digital</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label id="lbl-urgency">Urgência</label>
+                                    <select id="f-urgency">
+                                        <option value="Baixa">Baixa (Comum)</option>
+                                        <option value="Média">Média (Normal)</option>
+                                        <option value="Alta">Alta (Curto Prazo)</option>
+                                        <option value="Urgente">Urgente (Imediato)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label id="lbl-contact">Usuário do Responsável / Contato</label>
+                                    <input type="text" id="f-requester" placeholder="Nome ou Ramal">
+                                </div>
+                                <div>
+                                    <label id="lbl-date">Período de Envio</label>
+                                    <input type="date" id="f-sendDate">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-step" id="step2" style="display:none">
+                            <div class="form-grid">
+                                <div class="full-width">
+                                    <label id="lbl-theme">Tema do Comunicado</label>
+                                    <input type="text" id="f-theme" placeholder="Ex: Campanha de Vacinação 2024">
+                                </div>
+                                
+                                <div>
+                                    <label id="lbl-type">Tipo de Comunicado</label>
+                                    <select id="f-type">
+                                        <option>Aviso Geral</option>
+                                        <option>Comunicado Interno</option>
+                                        <option>Comunicado Urgente</option>
+                                        <option>Evento Corporativo</option>
+                                        <option>Workshop</option>
+                                        <option>Treinamento</option>
+                                        <option>Palestra</option>
+                                        <option>Integração / Onboarding</option>
+                                        <option>Confraternização</option>
+                                        <option>Campanha Interna</option>
+                                        <option>Ação de Endomarketing</option>
+                                        <option>Visita de Cliente</option>
+                                        <option>Visita da Diretoria</option>
+                                        <option>Auditoria Externa</option>
+                                        <option>Auditoria Interna</option>
+                                        <option>Inspeção</option>
+                                        <option>Alteração de Processo</option>
+                                        <option>Novo Processo</option>
+                                        <option>Atualização de Procedimento</option>
+                                        <option>Atualização de Manual</option>
+                                        <option>Padronização</option>
+                                        <option>Melhoria Contínua</option>
+                                        <option>Reorganização de Área</option>
+                                        <option>Mudança de Fluxo</option>
+                                        <option>Implementação de Projeto</option>
+                                        <option>Status de Projeto</option>
+                                        <option>Admissão</option>
+                                        <option>Desligamento</option>
+                                        <option>Promoção</option>
+                                        <option>Mudança de Cargo</option>
+                                        <option>Transferência de Área</option>
+                                        <option>Férias</option>
+                                        <option>Benefícios</option>
+                                        <option>Política Interna</option>
+                                        <option>Código de Conduta</option>
+                                        <option>Pesquisa Interna</option>
+                                        <option>Manutenção Programada</option>
+                                        <option>Instabilidade de Sistema</option>
+                                        <option>Novo Sistema</option>
+                                        <option>Atualização de Sistema</option>
+                                        <option>Segurança da Informação</option>
+                                        <option>Alteração de Acessos</option>
+                                        <option>Backup / Infraestrutura</option>
+                                        <option>Norma de Segurança</option>
+                                        <option>Treinamento Obrigatório</option>
+                                        <option>Atualização de Compliance</option>
+                                        <option>LGPD</option>
+                                        <option>Incidente</option>
+                                        <option>Plano de Contingência</option>
+                                        <option>Manutenção Predial</option>
+                                        <option>Mudança de Layout</option>
+                                        <option>Obra / Reforma</option>
+                                        <option>Organização de Espaço</option>
+                                        <option>Controle de Acesso</option>
+                                        <option>Alteração de Pagamento</option>
+                                        <option>Prestação de Contas</option>
+                                        <option>Reembolso</option>
+                                        <option>Orçamento</option>
+                                        <option>Controle de Custos</option>
+                                        <option>Lançamento de Produto</option>
+                                        <option>Atualização de Portfólio</option>
+                                        <option>Meta Comercial</option>
+                                        <option>Resultado Mensal</option>
+                                        <option>Campanha de Vendas</option>
+                                        <option>Comunicado da Diretoria</option>
+                                        <option>Planejamento Estratégico</option>
+                                        <option>Resultados Corporativos</option>
+                                        <option>Reconhecimento</option>
+                                        <option>Parceria Estratégica</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label id="lbl-public">Público-Alvo</label>
+                                    <select id="f-audience">
+                                        <option>Todos os Colaboradores</option>
+                                        <!-- Hierarquia -->
+                                        <option>Diretoria</option>
+                                        <option>Gerência</option>
+                                        <option>Coordenação / Supervisão</option>
+                                        <option>Liderança / Gestores</option>
+                                        <!-- Estrutura -->
+                                        <option>Apenas Administrativo</option>
+                                        <option>Apenas Operacional</option>
+                                        <option>Unidade Específica</option>
+                                        <option>Fábrica</option>
+                                        <option>Escritório</option>
+                                        <!-- Área -->
+                                        <option>Área Específica</option>
+                                        <option>Apenas TI</option>
+                                        <option>Apenas RH</option>
+                                        <option>Apenas Comercial</option>
+                                        <option>Apenas Engenharia</option>
+                                        <!-- Vínculo -->
+                                        <option>Colaboradores CLT</option>
+                                        <option>Terceiros</option>
+                                        <option>Estagiários / Aprendizes</option>
+                                        <option>Temporários</option>
+                                        <!-- Grupos -->
+                                        <option>Times de Projeto</option>
+                                        <option>Comitês</option>
+                                        <option>CIPA</option>
+                                        <option>Brigada de Incêndio</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-step" id="step3" style="display:none">
+                            <div class="form-grid">
+                                <div class="full-width">
+                                    <label id="lbl-header">Título / Header (Chamada Principal)</label>
+                                    <input type="text" id="f-header" placeholder="Frase de impacto">
+                                </div>
+                                <div class="full-width">
+                                    <label id="lbl-content">Texto ou Tópicos do Comunicado</label>
+                                    <textarea id="f-content" rows="4" placeholder="Escreva o conteúdo base aqui..."></textarea>
+                                </div>
+                                
+                                <div>
+            <label>Plataforma de Envio</label>
+            <select id="f-platform">
+                <option>Outlook</option>
+                <option>Microsoft Teams</option>
+                <option>Bosch Connect</option>
+                
+                <option>Bosch Tube</option>
+                
+                <option>Banners</option>
+                <option>TV Corporativa</option>
+                <option>WhatsApp Corporativo</option>
+                <option>My Bosch App</option>
+            </select>
+        </div>
+                                <div class="full-width">
+                                    <label id="lbl-media">Mídias e Arquivos Funcionais</label>
+                                    <div id="drop-zone" class="drop-zone" onclick="document.getElementById('f-files').click()">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <p style="margin: 5px 0; font-weight: 0;">Arraste arquivos aqui ou clique para selecionar</p>
+                                        <span style="font-size: 0.7rem; color: var(--text-sub)">PDF, PNG, JPG, DOCX (Máx. 10MB cada)</span>
+                                        <input type="file" id="f-files" multiple style="display: none">
+                                        <div id="file-list" class="file-list"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border);">
+                            <button type="button" class="btn-secondary" id="prevBtn" onclick="moveStep(-1)" style="visibility:hidden">Anterior</button>
+                            <button type="button" class="btn-primary" id="nextBtn" onclick="moveStep(1)">Próximo <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                    </form>
+                    <div id="success-screen" style="display:none; text-align:center; padding: 40px 0;">
+                        <i class="fas fa-check-double" style="font-size: 70px; color: var(--success); margin-bottom: 20px;"></i>
+                        <h2 id="txt-success">Briefing Enviado!</h2>
+                        <p id="txt-success-sub">O time de comunicação recebeu o "molde" estruturado e iniciará a criação.</p>
+                        <button class="btn-primary" onclick="resetForm()" style="margin: 20px auto;">Nova Solicitação</button>
+                    </div>
+                </div>
+            </div>
+            <div id="view-history" class="view-content">
+                <h2>Histórico de Briefings</h2>
+                <div class="card">
+                    <table class="lean-table">
+                        <thead>
+                            <tr>
+                                <th>Tema</th>
+                                <th>Solicitante</th>
+                                <th>Data / Hora</th>
+                                <th>Status</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div id="report-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:999; justify-content:center; align-items:center;">
+        <div class="modal-content" style="background: var(--card-bg); color: var(--text); width:90%; max-width:700px; padding:30px; border-radius:16px; max-height:80vh; overflow:auto; border: 1px solid var(--border); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3);">
+            <h2 id="txt-report-title" style="margin-top:0;">Relatório do Briefing</h2>
+            <div id="report-content" style="line-height: 1.6;"></div>
+            <button class="btn-primary" onclick="closeReport()" style="margin-top:20px; width: 100%; justify-content: center;">
+                <i class="fas fa-times"></i> Fechar
+            </button>
+        </div>
+    </div>
+    <script>
+        
+        // Abre e fecha o menu de idiomas ao clicar no ícone
+function toggleLangMenu() {
+    document.getElementById("lang-options").classList.toggle("show-lang");
+}
+// Seleciona a língua e fecha o menu
+function selectLang(lang) {
+    // Chama a função changeLang que já existe no seu código
+    changeLang(lang); 
+    
+    // Atualiza o texto pequeno ao lado do ícone
+    document.getElementById("current-lang-text").textContent = lang.toUpperCase();
+    
+    // Fecha o menu após a escolha
+    toggleLangMenu();
+}
+// Fecha o menu se o usuário clicar fora do botão de idioma
+window.onclick = function(event) {
+    if (!event.target.closest('.lang-custom-dropdown')) {
+        const dropdown = document.getElementById("lang-options");
+        if (dropdown && dropdown.classList.contains('show-lang')) {
+            dropdown.classList.remove('show-lang');
+        }
+    }
+}
+        function toggleNav() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('expanded');
+        }
+        let currentStep = 1;
+        let currentLang = 'pt';
+        let uploadedFiles = [];
+        const translations = {
+            pt: {
+                title: "Briefing de Comunicação",
+                subtitle: "Otimização de Fluxo de Informação Corporativa",
+                step_titles: \["Dados Gerais", "O Que e Para Quem", "Conteúdo Detalhado"\],
+                labels: {
+                    dept: "Área Solicitante", urgency: "Urgência", contact: "Usuário do Responsável / Contato",
+                    date: "Período de Envio", theme: "Tema do Comunicado", type: "Tipo de Comunicado",
+                    public: "Público-Alvo", header: "Título / Header (Chamada Principal)",
+                    content: "Texto ou Tópicos do Comunicado", media: "Mídias e Arquivos Funcionais"
+                },
+                placeholders: {
+                    contact: "Nome ou Ramal", theme: "Ex: Campanha de Vacinação 2024",
+                    header: "Frase de impacto", content: "Escreva o conteúdo base aqui..."
+                },
+                next: "Próximo", prev: "Anterior", finish: "Enviar Briefing", success: "Briefing Enviado!"
+            },
+            en: {
+                title: "Communication Briefing",
+                subtitle: "Corporate Information Flow Optimization",
+                step_titles: \["General Data", "What & Who", "Detailed Content"\],
+                labels: {
+                    dept: "Requesting Area", urgency: "Urgency", contact: "Responsible User / Contact",
+                    date: "Sending Period", theme: "Subject", type: "Communication Type",
+                    public: "Target Audience", header: "Title / Header (Main Call)",
+                    content: "Text or Topics", media: "Media and Functional Files"
+                },
+                placeholders: {
+                    contact: "Name or Extension", theme: "Ex: Vaccination Campaign 2024",
+                    header: "Impact phrase", content: "Write the base content here..."
+                },
+                next: "Next", prev: "Previous", finish: "Send Brief", success: "Briefing Sent!"
+            },
+            es: {
+                title: "Briefing de Comunicación",
+                subtitle: "Optimización del Flujo de Información Corporativa",
+                step_titles: \["Datos Generales", "Qué y Quién", "Contenido Detallado"\],
+                labels: {
+                    dept: "Área Solicitante", urgency: "Urgencia", contact: "Usuario Responsable / Contacto",
+                    date: "Período de Envío", theme: "Tema del Comunicado", type: "Tipo de Comunicado",
+                    public: "Público Objetivo", header: "Título / Header (Llamada Principal)",
+                    content: "Texto o Temas", media: "Medios y Archivos Funcionales"
+                },
+                placeholders: {
+                    contact: "Nombre o Extensión", theme: "Ej: Campaña de Vacunación 2024",
+                    header: "Frase de impacto", content: "Escriba el contenido base aquí..."
+                },
+                next: "Siguiente", prev: "Anterior", finish: "Enviar Briefing", success: "¡Briefing Enviado!"
+            },
+            de: {
+                title: "Kommunikations-Briefing",
+                subtitle: "Optimierung des Informationsflusses im Unternehmen",
+                step_titles: \["Allgemeine Daten", "Was & Für Wen", "Detaillierter Inhalt"\],
+                labels: {
+                    dept: "Anfordernder Bereich", urgency: "Dringlichkeit", contact: "Verantwortlicher Benutzer / Kontakt",
+                    date: "Sendezeitraum", theme: "Thema der Mitteilung", type: "Art der Mitteilung",
+                    public: "Zielgruppe", header: "Titel / Header (Hauptaufruf)",
+                    content: "Text oder Themen", media: "Medien und funktionale Dateien"
+                },
+                placeholders: {
+                    contact: "Name oder Durchwahl", theme: "Z.B.: Impfkampagne 2024",
+                    header: "Impact-Satz", content: "Basisinhalt hier schreiben..."
+                },
+                next: "Weiter", prev: "Zurück", finish: "Briefing senden", success: "Briefing Gesendet!"
+            }
+        };
+        // --- Lógica do DropZone ---
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('f-files');
+        const fileListDisplay = document.getElementById('file-list');
+        \['dragenter', 'dragover', 'dragleave', 'drop'\].forEach(eventName => {
+            dropZone.addEventListener(eventName, e => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        });
+        dropZone.addEventListener('dragover', () => dropZone.classList.add('drag-over'));
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+        dropZone.addEventListener('drop', (e) => {
+            dropZone.classList.remove('drag-over');
+            handleFiles(e.dataTransfer.files);
+        });
+        fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+        function handleFiles(files) {
+            Array.from(files).forEach(file => {
+                uploadedFiles.push(file.name);
+                const item = document.createElement('div');
+                item.className = 'file-item';
+                item.innerHTML = \`<i class="fas fa-file-alt"></i> ${file.name}\`;
+                fileListDisplay.appendChild(item);
+            });
+        }
+        // --- Lógica do Formulário ---
+        function changeLang(lang) {
+    currentLang = lang;
+    // Atualiza o valor do select caso a função seja chamada externamente
+    const selector = document.querySelector('.lang-dropdown');
+    if (selector) selector.value = lang;
+    
+    updateUI();
+}
+        function updateUI() {
+            const t = translations\[currentLang\];
+            
+            // Títulos e Subtítulos
+            document.getElementById('txt-main-title').textContent = t.title;
+            document.getElementById('txt-subtitle').textContent = t.subtitle;
+            document.getElementById('txt-success').textContent = t.success;
+            // Step Title
+            const stepTitleEl = document.getElementById('txt-step-title');
+            if (stepTitleEl) stepTitleEl.textContent = t.step_titles\[currentStep - 1\];
+            
+            // Labels
+            document.getElementById('lbl-dept').textContent = t.labels.dept;
+            document.getElementById('lbl-urgency').textContent = t.labels.urgency;
+            document.getElementById('lbl-contact').textContent = t.labels.contact;
+            document.getElementById('lbl-date').textContent = t.labels.date;
+            document.getElementById('lbl-theme').textContent = t.labels.theme;
+            document.getElementById('lbl-type').textContent = t.labels.type;
+            document.getElementById('lbl-public').textContent = t.labels.public;
+            document.getElementById('lbl-header').textContent = t.labels.header;
+            document.getElementById('lbl-content').textContent = t.labels.content;
+            document.getElementById('lbl-media').textContent = t.labels.media;
+            // Placeholders
+            document.getElementById('f-requester').placeholder = t.placeholders.contact;
+            document.getElementById('f-theme').placeholder = t.placeholders.theme;
+            document.getElementById('f-header').placeholder = t.placeholders.header;
+            document.getElementById('f-content').placeholder = t.placeholders.content;
+            // Botões e Contador
+            document.getElementById('nextBtn').innerHTML = currentStep === 3 ? \`${t.finish} <i class="fas fa-paper-plane"></i>\` : \`${t.next} <i class="fas fa-arrow-right"></i>\`;
+            document.getElementById('prevBtn').textContent = t.prev;
+        }
+        function moveStep(n) {
+            if (n === 1) {
+                const currentStepEl = document.getElementById(\`step${currentStep}\`);
+                // Busca apenas campos visíveis para evitar travar em campos ocultos
+                const inputs = currentStepEl.querySelectorAll('input:not(\[type="file"\]), select, textarea');
+                let isValid = true;
+                let primeiroCampoVazio = null;
+                inputs.forEach(input => {
+                    // Verifica se o campo está vazio
+                    if (!input.value.trim()) {
+                        input.style.border = '2px solid var(--danger)';
+                        isValid = false;
+                        if (!primeiroCampoVazio) primeiroCampoVazio = input;
+                    } else {
+                        input.style.border = '1px solid var(--border)';
+                    }
+                });
+                if (!isValid) {
+                    if (primeiroCampoVazio) primeiroCampoVazio.focus();
+                    return; // Para a execução aqui
+                }
+            }
+            // Lógica de envio final (Passo 3)
+            if (n === 1 && currentStep === 3) {
+                // Lista de status possíveis
+                const statusOpcoes = \[
+                    "Briefing enviado", 
+                    "Briefing Recebido", 
+                    "Briefing em progresso", 
+                    "Briefing finalizado", 
+                    "Briefing recusado"
+                \];
+                
+                // Escolhe um status aleatório
+                const statusAleatorio = statusOpcoes\[Math.floor(Math.random() \* statusOpcoes.length)\];
+                const briefing = {
+                    area: document.getElementById('f-area').value,
+                    urgency: document.getElementById('f-urgency').value,
+                    requester: document.getElementById('f-requester').value,
+                    sendDate: document.getElementById('f-sendDate').value,
+                    theme: document.getElementById('f-theme').value,
+                    type: document.getElementById('f-type').value,
+                    audience: document.getElementById('f-audience').value,
+                    header: document.getElementById('f-header').value,
+                    content: document.getElementById('f-content').value,
+                    platform: document.getElementById("f-platform").value,
+                    media: uploadedFiles.join(", ") || "Nenhum arquivo anexado",
+                    datetime: new Date().toLocaleString(),
+                    status: statusAleatorio // Define o status sorteado aqui
+                };
+
+                // ###############################################################
+                // ## INÍCIO DO CÓDIGO DE INTEGRAÇÃO COM GOOGLE SHEETS          ##
+                // ###############################################################
+                const urlDoScript = 'https://script.google.com/macros/s/AKfycbwfuV9O2Flp4V3eO6Qtva6QGks9P4of4qiLrWU7BK8tFqae9mSA5DlcfcrTfEsFbRjm/exec'; // <-- IMPORTANTE: SUBSTITUA PELA URL DO SEU SCRIPT
+                const formData = new FormData();
+                for (const key in briefing) {
+                    formData.append(key, briefing[key]);
+                }
+                
+                // Exibe a tela de sucesso imediatamente, mas com uma mensagem de "enviando"
+                document.getElementById("multi-form").style.display = 'none';
+                document.getElementById("success-screen").style.display = 'block';
+                const successSubText = document.getElementById("txt-success-sub");
+                successSubText.textContent = "Enviando para o banco de dados...";
+
+                fetch(urlDoScript, { method: 'POST', body: formData })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            console.log("Dados enviados para o Google Sheets com sucesso!");
+                            successSubText.textContent = "O time de comunicação recebeu o 'molde' estruturado e iniciará a criação.";
+                            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+                        } else {
+                            console.error("Erro ao enviar para o Google Sheets:", data.message);
+                            successSubText.textContent = "Ocorreu um erro ao enviar o briefing. Por favor, tente novamente.";
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Erro de rede ao contatar o Google Sheets:", error);
+                        successSubText.textContent = "Erro de conexão. Verifique sua internet e tente novamente.";
+                    });
+                // ###############################################################
+                // ## FIM DO CÓDIGO DE INTEGRAÇÃO                               ##
+                // ###############################################################
+
+                // Salva no histórico LOCAL do navegador (código original)
+                let history = JSON.parse(localStorage.getItem("briefHistory")) || [];
+                history.push(briefing);
+                localStorage.setItem("briefHistory", JSON.stringify(history));
+
+                return; // Impede a continuação da função moveStep
+            }
+            // Troca de abas do formulário
+            const steps = document.querySelectorAll('.form-step');
+            steps\[currentStep - 1\].style.display = 'none';
+            currentStep += n;
+            steps\[currentStep - 1\].style.display = 'block';
+            updateUI();
+            document.getElementById("prevBtn").style.visibility = currentStep === 1 ? "hidden" : "visible";
+        }
+        function loadHistory() {
+            const table = document.getElementById("history-table");
+            const history = JSON.parse(localStorage.getItem("briefHistory")) || [];
+            table.innerHTML = "";
+            history.forEach((item, index) => {
+                // Define um status padrão caso o item não tenha um (para briefings antigos)
+                const status = item.status || "Briefing enviado";
+                // Mapeia o texto para a classe CSS correspondente
+                let statusClass = "status-enviado";
+                if (status === "Briefing Recebido") statusClass = "status-recebido";
+                else if (status === "Briefing em progresso") statusClass = "status-progresso";
+                else if (status === "Briefing finalizado") statusClass = "status-finalizado";
+                else if (status === "Briefing recusado") statusClass = "status-recusado";
+                table.innerHTML += \`
+                    <tr>
+                        <td>${item.theme || "-"}</td>
+                        <td>${item.requester || "-"}</td>
+                        <td>${item.datetime}</td>
+                        <td><span class="status-badge ${statusClass}">${status}</span></td>
+                        <td><button class="btn-secondary" onclick="openReport(${index})">Visualizar</button></td>
+                    </tr>\`;
+            });
+        }
+        function openReport(index) {
+            const history = JSON.parse(localStorage.getItem("briefHistory")) || [];
+            const data = history\[index\];
+            document.getElementById("report-content").innerHTML = \`
+                <p><strong>Área:</strong> ${data.area || "-"}</p>
+                <p><strong>Urgência:</strong> ${data.urgency || "-"}</p>
+                <p><strong>Responsável:</strong> ${data.requester || "-"}</p>
+                <p><strong>Data de Envio:</strong> ${data.sendDate || "-"}</p>
+                <hr>
+                <p><strong>Tema:</strong> ${data.theme || "-"}</p>
+                <p><strong>Tipo:</strong> ${data.type || "-"}</p>
+                <p><strong>Público-Alvo:</strong> ${data.audience || "-"}</p>
+                <hr>
+                <p><strong>Título:</strong> ${data.header || "-"}</p>
+                
+                <p><strong>Plataforma:</strong> ${data.platform || "-"}</p>
+                <p><strong>Conteúdo:</strong><br>${data.content || "-"}</p>
+                <p><strong>Arquivos:</strong> <span style="color: var(--bosch-blue)">${data.media || "-"}</span></p>
+                <hr>
+                <p><strong>Registrado em:</strong> ${data.datetime}</p>\`;
+            document.getElementById("report-modal").style.display = "flex";
+        }
+        function closeReport() {
+            document.getElementById("report-modal").style.display = "none";
+        }
+        function resetForm() {
+            document.getElementById("multi-form").reset();
+            uploadedFiles = [];
+            fileListDisplay.innerHTML = "";
+            document.getElementById("success-screen").style.display = 'none';
+            document.getElementById("multi-form").style.display = 'block';
+            document.querySelectorAll('.form-step').forEach(s => s.style.display = 'none');
+            currentStep = 1;
+            document.querySelectorAll('.form-step')\[0\].style.display = 'block';
+            updateUI();
+        }
+        function switchTab(tab, el) {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+            document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
+            document.getElementById('view-' + tab).classList.add('active');
+            if (tab === 'history') loadHistory();
+        }
+        function toggleTheme() {
+            document.body.classList.toggle('dark');
+        }
+        updateUI();
+        loadHistory();
+    </script>
+</body>
+</html>
+
